@@ -72,12 +72,12 @@ void main(void)
             move();
             landOnG();
 
-            if (win1)
+            if (money2 < 0)
             {
                 printf("PLAYER 1 WON");
                 break;
             }
-            else if (win2)
+            else if (money1 < 0)
             {
                 printf("PLAYER 2 WON");
                 break;
@@ -157,7 +157,9 @@ void move(void)
         buy = checkBuy(turn); // Update buy status
 
         if (!rolled)
+        {
             printf("[1] Roll Dice\n");
+        }
         if (buy && rolled)
         {
             printf("[2] Buy Property: %s\n", propNames[posCheck(turn)]);
