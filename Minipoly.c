@@ -19,13 +19,13 @@ int globPos1;
 int globPos2;
 
 // Starting money
-float money1 = 1500;
-float money2 = 1500;
+float money1 = 300;
+float money2 = 300;
 
 // Properties
 char *propNames[] = {"", "Kentucky Avenue", "Indiana Avenue", "Illinois Avenue", "Pacific Avenue", "", "North Carolina Avenue", "Pennsylvania Avenue", "Oriental Avenue", "Vermont Avenue", "", "Connecticut Avenue", "St. James Place", "Tennessee Avenue", "New York Avenue", "", "Tax Pay", "Atlantic Avenue", "Ventnor Avenue", "Marvin Gardens"};
 char propTypes[] = {'0', 'R', 'R', 'R', 'G', '0', 'G', 'G', 'B', 'B', '0', 'B', 'O', 'O', 'O', '0', 'T', 'Y', 'Y', 'Y'};
-int props[20] = {0, 18, 18, 20, 26, 0, 26, 28, 6, 6, 0, 8, 14, 14, 16, 0, 100, 22, 22, 24};
+int props[20] = {0, 18, 18, 20, 26, 0, 26, 28, 6, 6, 0, 8, 14, 14, 16, 0, 0, 22, 22, 24};
 int props1[20];
 int props2[20];
 
@@ -75,11 +75,13 @@ void main(void)
             if (money2 < 0)
             {
                 printf("PLAYER 1 WON");
+                newLines(2);
                 break;
             }
             else if (money1 < 0)
             {
                 printf("PLAYER 2 WON");
+                newLines(2);
                 break;
             }
 
@@ -142,6 +144,18 @@ void move(void)
         printf("Player 1: %.2f\n", money1);
         printf("Player 2: %.2f", money2);
         newLines(2);
+
+        if (debugMode)
+        {
+            printf("Player 1 Properties: { ");
+            for (int i = 0; i <= 19; i++)
+                printf("%i ", props1[i]);
+            printf("}\nPlayer 2 Properties: { ");
+            for (int i = 0; i <= 19; i++)
+                printf("%i ", props2[i]);
+            printf("}");
+            newLines(2);
+        }
 
         // Initialize turns
         switch (turn)
@@ -255,28 +269,53 @@ int checkBuy(int player)
 // Pay Rent
 void payRent(int player)
 {
+    int payed = 0;
     int toPay = 0;
+    int tax = 100;
     // Deduct money from opposite player
     switch (player)
     {
     case 1:
+        // Rent
         toPay = props2[posCheck(player)];
         if (toPay)
         {
-            money2 -= toPay;
-            printf("Player 1 paid $%i for rent", toPay);
+            money1 -= toPay;
+            printf("Player 1 paid $%i for %s rent", toPay, propNames[posCheck(player)]);
+            payed = 1;
+        }
+
+        // Tax Space
+        if (posCheck(player) == 15)
+        {
+            money1 -= tax;
+            printf("Player 1 paid $%i for Tax", tax);
+            payed = 1;
         }
         break;
 
     case 2:
+        // Rent
         toPay = props1[posCheck(player)];
         if (toPay)
         {
             money2 -= toPay;
-            printf("Player 2 paid $%i for rent", toPay);
+            printf("Player 2 paid $%i for %s rent", toPay, propNames[posCheck(player)]);
+            payed = 1;
+        }
+
+        // Tax Space
+        if (posCheck(player) == 15)
+        {
+            money2 -= tax;
+            printf("Player 2 paid $%i for Tax", tax);
+            payed = 1;
         }
         break;
     }
+
+    if (payed)
+        newLines(2);
 }
 
 // Check player position
@@ -294,7 +333,7 @@ int posCheck(int player)
     } // expandable
 }
 
-// Check player position manual
+// Check player position (manual)
 // int posCheck(int player)
 // {
 //     // Check every value in array
